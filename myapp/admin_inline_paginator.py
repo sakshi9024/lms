@@ -33,13 +33,9 @@ class StackedInlinePaginated(StackedInline):
                 page_num = request.GET.get(f"{self.pagination_key}_page", 1)
                 return self.paginator.get_page(page_num)
 
-            def _construct_forms(self):
-                self.forms = []
             @cached_property 
             def page_queryset(self):   
-                start = self.page_obj.start_index() - 1
-                end = self.page_obj.end_index()
-                return list(self.base_queryset[start:end])
+                return list(self.page_obj.object_list)
             
             def _construct_forms(self):
                 self._forms = []
