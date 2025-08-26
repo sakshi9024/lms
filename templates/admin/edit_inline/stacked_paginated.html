@@ -1,0 +1,54 @@
+{% load i18n admin_urls static %}
+
+<fieldset class="module aligned {{ inline_admin_formset.opts.verbose_name }}">
+    <h2>
+        {{ inline_admin_formset.opts.verbose_name_plural|capfirst }}
+    </h2>
+
+    {{ inline_admin_formset.formset.management_form }}
+
+    {% if inline_admin_formset.formset.non_form_errors %}
+        <div class="errorlist nonform">
+            {{ inline_admin_formset.formset.non_form_errors }}
+        </div>
+    {% endif %}
+
+    <div class="inline-group" id="{{ inline_admin_formset.formset.prefix }}-group">
+
+        {% for inline_admin_form in inline_admin_formset %}
+            <div class="inline-related">
+                {% for fieldset in inline_admin_form %}
+                    {% include "admin/includes/fieldset.html" %}
+                {% endfor %}
+            </div>
+        {% empty %}
+            <p>{% trans "No items found." %}</p>
+        {% endfor %}
+
+    </div>
+
+    {# --- Pagination controls --- #}
+    {% if inline_admin_formset.formset.page_obj.paginator.num_pages > 1 %}
+        <div class="pagination">
+            {% with page_obj=inline_admin_formset.formset.page_obj %}
+                <span class="step-links">
+                    {% if page_obj.has_previous %}
+                        <a href="?{{ inline_admin_formset.formset.pagination_key }}_page={{ page_obj.previous_page_number }}">
+                            &laquo; Previous
+                        </a>
+                    {% endif %}
+
+                    <span class="current">
+                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                    </span>
+
+                    {% if page_obj.has_next %}
+                        <a href="?{{ inline_admin_formset.formset.pagination_key }}_page={{ page_obj.next_page_number }}">
+                            Next &raquo;
+                        </a>
+                    {% endif %}
+                </span>
+            {% endwith %}
+        </div>
+    {% endif %}
+</fieldset>

@@ -1,0 +1,55 @@
+/* === Custom Django Admin Theme === */
+
+/* Background of entire admin */
+body.login, body {
+    background-color: #f0f4f8; /* light gray-blue */
+}
+
+/* Header bar (top navbar) */
+#header {
+    background-color: #e91e63; /* pink */
+    color: #ffffff; /* white text */
+}
+
+/* Header title text */
+#header h1 a {
+    color: #ffffff !important;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+/* Sidebar / module headers */
+.module h2 {
+    background-color: #e91e63; /* pink */
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+/* Links */
+a:link, a:visited {
+    color: rgb(179, 132, 140);
+}
+a:hover {
+    color: #e74c3c; /* red hover */
+}
+
+/* Table headers */
+#changelist table thead th {
+    background-color: #e91e63; /* pink */
+    color: white;
+    font-weight: bold;
+}
+
+/* Buttons */
+.button, input[type=submit] {
+    background-color: #27ae60 !important; /* green */
+    border: none !important;
+    color: white !important;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.button:hover, input[type=submit]:hover {
+    background-color: #219150 !important;
+}
