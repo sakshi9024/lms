@@ -17,7 +17,7 @@ class StackedInlinePaginated(StackedInline):
 
             @cached_property
             def base_queryset(self):
-                # Use parent formset's get_queryset() (Django API)
+                # Parent formset's queryset, optionally filtered and ordered
                 qs = super(PaginatedFormSet, self).get_queryset()
                 if obj is not None:
                     fk_name = self.fk.name
@@ -33,24 +33,10 @@ class StackedInlinePaginated(StackedInline):
                 page_num = request.GET.get(f"{self.pagination_key}_page", 1)
                 return self.paginator.get_page(page_num)
 
-            @cached_property
-            def page_queryset(self):
+            def get_queryset(self):
+                # Return only the current page's slice as a QuerySet
                 start = self.page_obj.start_index() - 1
                 end = self.page_obj.end_index()
-                return list(self.base_queryset[start:end])
-
-            def _construct_forms(self):
-                # Build only forms for the current page and set _forms for admin to use
-                self._forms = []
-                for i, obj_instance in enumerate(self.page_queryset):
-                    self._forms.append(self._construct_form(i, instance=obj_instance))
-
-            def initial_form_count(self):
-                # Number of initial forms equals items on this page
-                return len(self.page_queryset)
-
-            def total_form_count(self):
-                # Total forms equals items on this page (no extras)
-                return len(self.page_queryset)
+                return self.base_queryset[start:end]
 
         return PaginatedFormSet
