@@ -35,6 +35,10 @@ class BookInline(StackedInlinePaginated):
     extra = 0
     ordering = ['id']
     fields = ['name', 'author', 'selling_price', 'quantity', 'rent_price', 'category']
+
+    def has_add_permission(self, request, obj=None):
+        # Disable adding new inlines to remove the extra empty form
+        return False
     
 
 
