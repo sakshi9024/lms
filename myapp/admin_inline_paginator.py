@@ -13,7 +13,7 @@ class StackedInlinePaginated(StackedInline):
         class PaginatedFormSet(FormSet):
             pagination_key = self.pagination_key
             per_page = self.per_page
-            ordering = getattr(self, 'ordering',['id'])
+            ordering = getattr(self, 'ordering', ['id'])
 
             @cached_property
             def base_queryset(self):
@@ -22,7 +22,7 @@ class StackedInlinePaginated(StackedInline):
                 if obj is not None:
                     fk_name = self.fk.name
                     qs = qs.filter(**{fk_name: obj})
-                return qs.order_by(*self.ordering)
+                return qs.distinct().order_by(*self.ordering)
 
             @cached_property
             def paginator(self):
