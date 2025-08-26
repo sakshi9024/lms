@@ -17,8 +17,8 @@ class StackedInlinePaginated(StackedInline):
 
             @cached_property
             def base_queryset(self):
-                # Filter by parent object if editing an instance
-                qs = super(PaginatedFormSet, self).queryset
+                # Use parent formset's get_queryset() (Django API)
+                qs = super(PaginatedFormSet, self).get_queryset()
                 if obj is not None:
                     fk_name = self.fk.name
                     qs = qs.filter(**{fk_name: obj})
