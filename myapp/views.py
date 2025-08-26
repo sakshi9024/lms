@@ -15,7 +15,7 @@ from rest_framework import filters
 class BooksView(ModelViewSet):
     serializer_class = BookSerializer
     http_method_names = ['get', 'post']
-    queryset = Books.objects.all()
+    queryset = Books.objects.select_related('author', 'category').all().distinct()
 
     # Enable filtering, searching, and ordering
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
@@ -60,7 +60,7 @@ class BookDetail(APIView):
 from .serializers import BookDetailSerializer
 
 class BookDetailView(ListAPIView):
-    queryset = Books.objects.all()
+    queryset = Books.objects.select_related('author', 'category').all().distinct()
     serializer_class = BookDetailSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
 
