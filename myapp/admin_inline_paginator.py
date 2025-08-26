@@ -4,7 +4,6 @@ from django.utils.functional import cached_property
 
 
 class StackedInlinePaginated(StackedInline):
-    per_page = 2
     pagination_key = None  # e.g. "books"
 
     def get_formset(self, request, obj=None, **kwargs):
@@ -35,6 +34,9 @@ class StackedInlinePaginated(StackedInline):
             
             def total_form_count(self):
                 return self.initial_form_count()
+           
+            
+            
         
         setattr(PaginatedFormSet, 'pagination_key', pagination_key)
         setattr(PaginatedFormSet, 'per_page', per_page)

@@ -33,9 +33,12 @@ class BookInline(StackedInlinePaginated):
     pagination_key = 'books'
     template = "admin/edit_inline/stacked_paginated.html"  # keep inside templates/admin/...
     extra = 0
+    can_delete = False  # important: disables the extra empty form
     ordering = ['id']
     fields = ['name', 'author', 'selling_price', 'quantity', 'rent_price', 'category']
     
+    def has_add_permission(self, request, obj=None):
+        return False
 
 
 # ✅ Author Admin
