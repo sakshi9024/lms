@@ -13,19 +13,20 @@ class StackedInlinePaginated(StackedInline):
         class PaginatedFormSet(FormSet):
             pagination_key = self.pagination_key
             per_page = self.per_page
+            ordering = getattr(self, 'ordering',['id'])
 
             @cached_property
-            def queryset(self):
+            def base_queryset(self):
                 # Filter by parent object if editing an instance
-                qs = super(PaginatedFormSet, self).queryset
+                qs = super(PaginatedFormSet, self).get_queryset()
                 if obj is not None:
                     fk_name = self.fk.name
                     qs = qs.filter(**{fk_name: obj})
-                return qs.order_by(*getattr(self, 'ordering', ['id']))
+                return qs.order_by(*self.ordering)
 
             @cached_property
             def paginator(self):
-                return Paginator(self.queryset, self.per_page)
+                return Paginator(self.base_queryset, self.per_page)
 
             @cached_property
             def page_obj(self):
@@ -34,23 +35,22 @@ class StackedInlinePaginated(StackedInline):
 
             def _construct_forms(self):
                 self.forms = []
-                # Slice queryset manually for current page
+            @cached_property 
+            def page_queryset(self):   
                 start = self.page_obj.start_index() - 1
                 end = self.page_obj.end_index()
-                page_queryset = list(self.queryset[start:end])
-                for i, obj_instance in enumerate(page_queryset):
-                    self.forms.append(self._construct_form(i, instance=obj_instance))
-                # No extra forms
-                # self.forms += [self._construct_form(i + len(page_queryset)) for i in range(self.extra)]
-
-            def __iter__(self):
-                if not hasattr(self, "forms") or not self.forms:
-                    self._construct_forms()
-                return iter(self.forms)
-
-            def __len__(self):
-                if not hasattr(self, "forms") or not self.forms:
-                    self._construct_forms()
-                return len(self.forms)
+                return list(self.base_queryset[start:end])
+            
+            def _construct_forms(self):
+                self._forms = []
+                for i, obj_instance in enumerate(self.page_queryset):
+                    self._forms.append(self._construct_form(i, instance=obj_instance))
+            
+            def initial_form_count(self):
+                return len(self.page_queryset)       
+            
+            def total_form_count(self):
+                return len(self.page_queryset)
 
         return PaginatedFormSet
+
