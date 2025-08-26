@@ -33,6 +33,7 @@ class BookInline(StackedInlinePaginated):
     pagination_key = 'books'
     template = "admin/edit_inline/stacked_paginated.html"  # keep inside templates/admin/...
     extra = 0
+    max_num = 0
     ordering = ['id']
     fields = ['name', 'author', 'selling_price', 'quantity', 'rent_price', 'category']
 

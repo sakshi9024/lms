@@ -17,7 +17,6 @@ class StackedInlinePaginated(StackedInline):
 
             @cached_property
             def base_queryset(self):
-                # Filter by parent object if editing an instance
                 qs = super(PaginatedFormSet, self).get_queryset()
                 if obj is not None:
                     fk_name = self.fk.name
@@ -33,21 +32,13 @@ class StackedInlinePaginated(StackedInline):
                 page_num = request.GET.get(f"{self.pagination_key}_page", 1)
                 return self.paginator.get_page(page_num)
 
-            @cached_property 
-            def page_queryset(self):   
-                # Use paginator's object_list for the current page to avoid index math issues
-                return list(self.page_obj.object_list)
-            
-            def _construct_forms(self):
-                self._forms = []
-                for i, obj_instance in enumerate(self.page_queryset):
-                    self._forms.append(self._construct_form(i, instance=obj_instance))
-            
-            def initial_form_count(self):
-                return len(self.page_queryset)       
-            
-            def total_form_count(self):
-                return len(self.page_queryset)
+            def get_queryset(self):
+                # Return only the current page's objects as a sliced QuerySet
+                if not hasattr(self, '_queryset'):
+                    start = self.page_obj.start_index() - 1
+                    end = self.page_obj.end_index()
+                    self._queryset = self.base_queryset[start:end]
+                return self._queryset
 
         return PaginatedFormSet
 
