@@ -10,7 +10,7 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.generics import ListAPIView
 from rest_framework import filters
-
+from django.db.models import Min, Subquery
 
 class BooksView(ModelViewSet):
     serializer_class = BookSerializer
@@ -29,7 +29,18 @@ class BooksView(ModelViewSet):
     # 3️⃣ Ordering (sorting)
     ordering_fields = ['selling_price', 'rent_price', 'quantity']
     ordering = ['selling_price']  # Default ordering
-    
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        ids_per_name = queruset.values('name').annote(first_id=Min('id')).values('first_id')
+        deduped_qs = queryset.filter(id__in=Subquery(ids_per_name)).order_by('name','id')
+        page = self.paginate_queryset(deduped_qs)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(deduped_qs, many=True)
+        return Response(serializer.data)
+            
+        
         
 class AuthorView(ModelViewSet):
     serializer_class = AuthorSerializer
@@ -68,7 +79,17 @@ class BookDetailView(ListAPIView):
     search_fields = ["name", "author__name"]    # Searching
     ordering_fields = ["selling_price", "quantity"] 
 
-
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        ids_per_name = queruset.values('name').annote(first_id=Min('id')).values('first_id')
+        deduped_qs = queryset.filter(id__in=Subquery(ids_per_name)).order_by('name','id')
+        page = self.paginate_queryset(deduped_qs)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(deduped_qs, many=True)
+        return Response(serializer.data)
+            
     
         
         
