@@ -41,7 +41,7 @@ class BookSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Books
-        fields = ['id', 'name','quantity','author','rent_books','category','sold_books','author']
+        fields = ['id', 'name','quantity','author','rent_books','category','sold_books']
     
     # def get_similar_books(self,obj):
     #     books = Books.objects.filter(category_id = obj.category.id).exclude(id=obj.id)
@@ -53,13 +53,9 @@ class BookSerializer(serializers.ModelSerializer):
         return books
 
     def get_sold_books(self, obj):
-        print("object",obj)
-        print("object id",obj.id)
         books = UserBook.objects.filter(type= 'S',book_id = obj.id).count()
-        print(books)
         return books
-    
-                    
+                        
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model =UserProfile
@@ -75,7 +71,7 @@ class UserBookSerializer(serializers.ModelSerializer):
         if book.quantity < 1:
             raise serializers.ValidationError("This book is out of stock!")
         return data
-    
+        
 
 
 
