@@ -1,5 +1,26 @@
 {% load i18n admin_urls static %}
 
+<style>
+div.pagination a {
+    background: #3498db !important;
+    color: white !important;
+    padding: 8px 14px !important;
+    border-radius: 6px !important;
+    text-decoration: none !important;
+    margin: 0 5px !important;
+    display: inline-block !important;
+}
+div.pagination a:hover {
+    background: #2980b9 !important;
+}
+div.pagination .current {
+    background: #2c3e50 !important;
+    color: #fff !important;
+    padding: 8px 14px !important;
+    border-radius: 6px !important;
+}
+</style>
+
 <fieldset class="module aligned {{ inline_admin_formset.opts.verbose_name }}">
     <h2>
         {{ inline_admin_formset.opts.verbose_name_plural|capfirst }}

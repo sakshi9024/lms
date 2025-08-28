@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Success</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        a:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h2>File successfully uploaded and converted to PDF 🎉</h2>
+    {% if pdf_url %}
+        <a href="{{ pdf_url }}" download>Download Converted PDF</a>
+    {% endif %}
+    <br><br>
+    <a href="{% url 'upload' %}">Upload Another File</a>
+</body>
+</html>

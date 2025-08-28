@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'newtask',
-    'base'
+    'base',
+    'conversion'
     
 ]
 
